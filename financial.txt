@@ -1,0 +1,53 @@
+{\rtf1\ansi\ansicpg1254\cocoartf2821
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 import numpy as np\
+import pandas as pd\
+import matplotlib.pyplot as plt\
+from sklearn.linear_model import LinearRegression\
+from sklearn.model_selection import train_test_split\
+from sklearn.metrics import mean_absolute_error\
+\
+# \'d6rnek finansal veri olu\uc0\u351 turma (Gelir ve Harcama)\
+data = \{\
+    "Month": np.arange(1, 13),  # 12 ay\
+    "Income": [3000, 3200, 3100, 3300, 3500, 3400, 3600, 3700, 3900, 4000, 4200, 4300],\
+    "Expenses": [2200, 2100, 2300, 2400, 2500, 2600, 2700, 2800, 2900, 3100, 3200, 3300]\
+\}\
+df = pd.DataFrame(data)\
+\
+# Ba\uc0\u287 \u305 ms\u305 z de\u287 i\u351 ken (X) ve ba\u287 \u305 ml\u305  de\u287 i\u351 ken (Y) se\'e7imi\
+X = df[["Month", "Income"]]  # Ba\uc0\u287 \u305 ms\u305 z de\u287 i\u351 kenler (Ay ve Gelir)\
+Y = df["Expenses"]  # Ba\uc0\u287 \u305 ml\u305  de\u287 i\u351 ken (Harcama)\
+\
+# Veriyi e\uc0\u287 itim ve test setlerine ay\u305 rma\
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=42)\
+\
+# Modeli olu\uc0\u351 turma ve e\u287 itme\
+model = LinearRegression()\
+model.fit(X_train, Y_train)\
+\
+# Modelin do\uc0\u287 ruluk de\u287 erlendirmesi\
+Y_pred = model.predict(X_test)\
+mae = mean_absolute_error(Y_test, Y_pred)\
+print(f"Modelin Ortalama Mutlak Hata De\uc0\u287 eri (MAE): \{mae:.2f\}")\
+\
+# Gelecek ay\uc0\u305 n harcama tahmini (13. ay i\'e7in)\
+future_month = np.array([[13, 4500]])  # 13. ay ve 4500 gelir varsay\uc0\u305 m\u305 \
+tahmini_harcama = model.predict(future_month)[0]\
+print(f"Tahmini Harcama (13. Ay): \{tahmini_harcama:.2f\}")\
+\
+# G\'f6rselle\uc0\u351 tirme\
+plt.figure(figsize=(8, 5))\
+plt.scatter(df["Month"], df["Expenses"], color='blue', label='Ger\'e7ek Harcamalar')\
+plt.plot(df["Month"], model.predict(X), color='red', linestyle='dashed', label='Tahmin Edilen Harcamalar')\
+plt.xlabel("Ay")\
+plt.ylabel("Harcama ($)")\
+plt.title("Ayl\uc0\u305 k Harcama Tahmini")\
+plt.legend()\
+plt.show()\
+}
